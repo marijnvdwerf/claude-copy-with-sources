@@ -82,8 +82,10 @@
     btnGroup.className = copyGroup.className;
 
     const btn = document.createElement("button");
-    btn.className = copyBtn.className.replace("rounded-l-lg", "rounded-lg");
-    btn.style.borderRight = "0.5px solid rgba(222, 220, 209, 0.3)";
+    btn.className = copyBtn.className
+      .replace("rounded-l-lg", "rounded-lg")
+      .replace(/border-[ylr]\b/g, "")
+      + " border-0.5";
     btn.textContent = "Copy with sources";
 
     btn.addEventListener("click", () => {
