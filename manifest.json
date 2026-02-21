@@ -1,0 +1,16 @@
+{
+  "manifest_version": 3,
+  "name": "Claude Copy with Sources",
+  "description": "Adds a 'Copy with sources' button to Claude.ai deep research artifacts that exports markdown with footnoted citations.",
+  "version": "1.0.0",
+  "permissions": ["clipboardWrite"],
+  "content_scripts": [
+    {
+      "matches": ["https://claude.ai/*"],
+      "js": ["content.js"],
+      "run_at": "document_idle",
+      "world": "MAIN"
+    }
+  ],
+  "icons": {}
+}

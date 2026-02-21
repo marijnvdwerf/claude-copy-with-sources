@@ -1,0 +1,24 @@
+name: Package Extension
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Create zip
+        run: zip -r claude-copy-with-sources-${{ github.ref_name }}.zip manifest.json content.js icons/ -x "*.git*"
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: claude-copy-with-sources-${{ github.ref_name }}.zip
+          generate_release_notes: true
