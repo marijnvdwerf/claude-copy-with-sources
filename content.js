@@ -2,16 +2,20 @@
   const BUTTON_ID = "copy-with-sources-btn";
 
   function getFiberRoot() {
-    const el = document.documentElement;
-    const fiberKey = Object.keys(el).find(
-      (k) =>
-        k.startsWith("__reactFiber$") ||
-        k.startsWith("__reactInternalInstance$")
-    );
-    if (!fiberKey) return null;
-    let fiber = el[fiberKey];
-    while (fiber?.return) fiber = fiber.return;
-    return fiber;
+    for (const el of [document.getElementById("root"), document.documentElement]) {
+      if (!el) continue;
+      const fiberKey = Object.keys(el).find(
+        (k) =>
+          k.startsWith("__reactContainer$") ||
+          k.startsWith("__reactFiber$") ||
+          k.startsWith("__reactInternalInstance$")
+      );
+      if (!fiberKey) continue;
+      let fiber = el[fiberKey];
+      while (fiber?.return) fiber = fiber.return;
+      return fiber;
+    }
+    return null;
   }
 
   function findArtifact(root) {
