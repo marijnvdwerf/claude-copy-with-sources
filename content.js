@@ -118,8 +118,42 @@
     toolbar.insertBefore(btnGroup, copyGroup);
   }
 
+  function injectDownloadMenuItem(menu) {
+    if (menu.querySelector("[data-sources-download]")) return;
+
+    const mdLink = [...menu.querySelectorAll("a")].find(
+      (a) => a.textContent.trim() === "Download as Markdown"
+    );
+    if (!mdLink) return;
+
+    const item = document.createElement("a");
+    item.setAttribute("data-sources-download", "");
+    item.className = mdLink.className;
+    item.textContent = "Download as Markdown with sources";
+    item.addEventListener("click", (e) => {
+      e.preventDefault();
+      const root = getFiberRoot();
+      const artifact = root && findArtifact(root);
+      if (!artifact) return;
+
+      const markdown = buildMarkdown(artifact);
+      const blob = new Blob([markdown], { type: "text/markdown" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = mdLink.download.replace(/\.md$/, "_with_sources.md");
+      a.click();
+      URL.revokeObjectURL(url);
+    });
+
+    mdLink.after(item);
+  }
+
   const observer = new MutationObserver(() => {
     injectButton();
+    document
+      .querySelectorAll('[role="menu"]')
+      .forEach(injectDownloadMenuItem);
   });
 
   observer.observe(document.body, {
